@@ -1,44 +1,49 @@
-node {
-    // Cleaning workspace
-    cleanWs()
+pipeline {
+    agent any
 
-    def app
-    def branchName = env.BRANCH_NAME.replaceAll("/", "-")
-    def imageName = "helloworld-spring-boot"
-    def registry = "dharun05"
-    def imageTag = "${registry}/${imageName}:${branchName}"
+    environment {
+        DOCKER_IMAGE = 'helloworld-spring-boot'
+        DOCKER_REGISTRY = 'dharun05'
+    }
 
-    try {
+    stages {
         stage('Clone') {
-            checkout scm
+            steps {
+                checkout scm
+            }
         }
 
         stage('Docker Build') {
-            // Build Docker image with branch-specific tag
-            app = docker.build(imageTag, "--no-cache .")
+            steps {
+                script {
+                    // Build the Docker image
+                    def imageName = "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${BRANCH_NAME}"
+                    sh "docker build -t ${imageName} ."
+                }
+            }
         }
 
         stage('Push to Registry') {
-            echo "Pushing Docker image to Docker Registry"
-            
-            // Log in to Docker registry using credentials stored in Jenkins
-            withCredentials([string(credentialsId: 'docker_registry_token', variable: 'TOKEN')]) {
-                sh '''
-                     docker login -u dharun05 -p "$TOKEN"
-                '''
-            }
+            steps {
+                script {
+                    echo "Pushing Docker image to Docker Registry"
+                    withCredentials([string(credentialsId: 'docker_registry_token', variable: 'TOKEN')]) {
+                        sh '''
+                            docker login -u dharun05 -p "$TOKEN"
+                        '''
+                    }
 
-            // Push the Docker image to the registry
-            docker.withRegistry('https://docker.io') {
-                app.push(imageTag) // Push with branch-specific tag
+                    // Push the Docker image to the registry
+                    def imageName = "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${BRANCH_NAME}"
+                    sh "docker push ${imageName}"
+                }
             }
         }
+    }
 
-    } catch (Exception e) {
-        currentBuild.result = 'FAILURE'
-        throw e
-    } finally {
-        // Clean workspace after the build process
-        cleanWs()
+    post {
+        always {
+            cleanWs()  // Clean the workspace after the build
+        }
     }
 }
