@@ -1,5 +1,31 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            label 'docker-agent'
+            defaultContainer 'jnlp'
+            yaml """
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+                - name: jnlp
+                  image: jenkins/inbound-agent:latest
+                  args: ['\$(JENKINS_SECRET)', '\$(JENKINS_AGENT_NAME)']
+                - name: docker
+                  image: docker:19.03.12
+                  command:
+                    - 'sleep'
+                    - 'infinity'
+                  volumeMounts:
+                    - mountPath: /var/run/docker.sock
+                      name: docker-socket
+            volumes:
+              - name: docker-socket
+                hostPath:
+                  path: /var/run/docker.sock
+          """
+        }
+    }
 
     environment {
         DOCKER_IMAGE = 'helloworld-spring-boot'
