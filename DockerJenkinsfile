@@ -44,14 +44,6 @@ pipeline {
             }
         }
 
-        stage('Install Docker CLI') {
-            steps {
-                script {
-                    sh 'apk add --no-cache docker'  // for Alpine-based images
-                }
-            }
-        }
-
         stage('Docker Build') {
             steps {
                 script {
