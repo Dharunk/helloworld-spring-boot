@@ -11,15 +11,15 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'chmod +x ./mvnw'
-                sh './mvnw clean package'
+                sh './mvnw clean install'
             }
         }
 
-        // stage('Test') {
-        //     steps {
-        //         sh 'chmod +x ./mvnw'
-        //         sh './mvnw test'
-        //     }
+        stage('Test') {
+            steps {
+                sh 'chmod +x ./mvnw'
+                sh './mvnw test'
+            }
         }
 
     }
