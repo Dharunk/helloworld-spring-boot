@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/jdk-21+35'
+    }
+
     stages {
         stage('Checkout') {
             steps {
