@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    // agent any
     // agent {
     //     kubernetes {
     //         label 'docker-agent'
@@ -27,6 +27,10 @@ pipeline {
     //       """
     //     }
     // }
+
+    agent {
+        docker { image 'docker:latest' }
+    }
 
     environment {
         DOCKER_IMAGE = 'helloworld-spring-boot'
