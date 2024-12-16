@@ -1,5 +1,5 @@
 pipeline {
-    // agent any
+    agent any
     // agent {
     //     kubernetes {
     //         label 'docker-agent'
@@ -28,9 +28,9 @@ pipeline {
     //     }
     // }
 
-    agent {
-        docker { image 'docker:latest' }
-    }
+    // agent {
+    //     docker { image 'docker:latest' }
+    // }
 
     environment {
         DOCKER_IMAGE = 'helloworld-spring-boot'
@@ -41,6 +41,14 @@ pipeline {
         stage('Clone') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Install Docker CLI') {
+            steps {
+                script {
+                    sh 'apk add --no-cache docker'  // for Alpine-based images
+                }
             }
         }
 
