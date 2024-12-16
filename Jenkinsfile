@@ -20,10 +20,10 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                echo "Deploying the application..."
-            }
-        }
+        // stage('Deploy') {
+        //     steps {
+        //         echo "Deploying the application..."
+        //     }
+        // }
     }
 }
