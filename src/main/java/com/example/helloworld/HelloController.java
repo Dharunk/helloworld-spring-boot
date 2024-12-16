@@ -13,6 +13,6 @@ public class HelloController {
 
     @GetMapping("/hi")
     public String sayHi() {
-        return "Hi everyone, I'm Dharunkumar";
+        return "Hi everyone, I'm Dk";
     }
 }
