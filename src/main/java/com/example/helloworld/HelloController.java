@@ -15,4 +15,9 @@ public class HelloController {
     public String sayHi() {
         return "Hi everyone, I'm Dk";
     }
+
+    @GetMapping("/dev")
+    public String dev() {
+        return "Hi everyone";
+    }
 }
